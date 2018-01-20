@@ -9,6 +9,9 @@ var index = require('./routes/index');
 var users = require('./routes/users');
 
 var app = express();
+// adding moment to express application locals
+app.locals.moment = require('moment');
+app.locals.moment.locale("es");
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
