@@ -1,80 +1,130 @@
 extends layout
 
 block content
-	.container
-		header.header
-			nav
-				ul.nav.nav-pills.float-right
-					li.nav-item
-						a.nav-link.active(href='https://getbootstrap.com/docs/4.0/examples/narrow-jumbotron/#')
-							| Home 
-							span.sr-only (current)
-					li.nav-item
-						a.nav-link(href='https://getbootstrap.com/docs/4.0/examples/narrow-jumbotron/#') About
-					li.nav-item
-						a.nav-link(href='https://getbootstrap.com/docs/4.0/examples/narrow-jumbotron/#') Contact
-			h3.text-muted Agence - Prototipe
-			hr
-		main(role='main')
-			//- .jumbotron.text-center
-				h1 Reporte Por Consultor
-				p Resize this responsive page to see the effect!
-			.row
-				.col-sm-12
-					.row.row-botton
-						.col-sm-2
-							h5 Período
-						.col-sm-10
-							.row
-								.col-md-6
-									.form-group
-										#datetimepicker7.input-group.date(data-target-input="nearest")
-											input.form-control.datetimepicker-input(type="text" data-target="#datetimepicker7")
-											.input-group-append(data-target="#datetimepicker7" data-toggle="datetimepicker")
-												.input-group-text
-													i.fa.fa-calendar
-								.col-md-6
-									.form-group
-										#datetimepicker8.input-group.date(data-target-input="nearest")
-											input.form-control.datetimepicker-input(type="text" data-target="#datetimepicker8")
-											.input-group-append(data-target="#datetimepicker8" data-toggle="datetimepicker")
-												.input-group-text
-													i.fa.fa-calendar
-							script(type="text/javascript").
-								$(function () {
-									$('#datetimepicker7').datetimepicker({
-										format: 'MM/YYYY'
-									});
-									$('#datetimepicker8').datetimepicker({
-										format: 'MM/YYYY',
-										useCurrent: false
-									});
-									$("#datetimepicker7").on("change.datetimepicker", function (e) {
-										$('#datetimepicker8').datetimepicker('minDate', e.date);
-									});
-									$("#datetimepicker8").on("change.datetimepicker", function (e) {
-										$('#datetimepicker7').datetimepicker('maxDate', e.date);
-									});
-								});
-				.col-sm-12
-					.row.row-botton
-						.col-sm-2
-							h5 Consultor
-						.col-sm-10
-							select#sel1.form-control(multiple="")
-								each val in consultant
-									option= val
-				.col-sm-12
-					.row.row-botton
-						.col-sm-2
-							h5 Generar
-						.col-sm-10
-							.row
-								.col-sm-3.row-botton
-									button.btn.btn-info.btn-block#send Relatório
-								.col-sm-3.row-botton
-									button.btn.btn-info.btn-block Gráfico
-								.col-sm-3.row-botton
-									button.btn.btn-info.btn-block Pizza
-		br
-		h2 Resultado
+  .container
+    header.header
+      nav
+        ul.nav.nav-pills.float-right
+          li.nav-item
+            a.nav-link.active(href='https://getbootstrap.com/docs/4.0/examples/narrow-jumbotron/#')
+              | Home 
+              span.sr-only (current)
+          li.nav-item
+            a.nav-link(href='https://getbootstrap.com/docs/4.0/examples/narrow-jumbotron/#') About
+          li.nav-item
+            a.nav-link(href='https://getbootstrap.com/docs/4.0/examples/narrow-jumbotron/#') Contact
+      h3.text-muted Agence - Prototipe
+      hr
+    main(role='main')
+      //- .jumbotron.text-center
+        h1 Reporte Por Consultor
+        p Resize this responsive page to see the effect!
+      .row
+        .col-sm-12
+          .row.row-botton
+            .col-sm-2
+              h5 Período
+            .col-sm-10
+              .row
+                .col-md-6
+                  .form-group
+                    #periodIni.input-group.date(data-target-input="nearest")
+                      input.form-control.datetimepicker-input(type="text" data-target="#periodIni")
+                      .input-group-append(data-target="#periodIni" data-toggle="datetimepicker")
+                        .input-group-text
+                          i.fa.fa-calendar
+                .col-md-6
+                  .form-group
+                    #periodFin.input-group.date(data-target-input="nearest")
+                      input.form-control.datetimepicker-input(type="text" data-target="#periodFin")
+                      .input-group-append(data-target="#periodFin" data-toggle="datetimepicker")
+                        .input-group-text
+                          i.fa.fa-calendar
+              script(type="text/javascript").
+                $(function () {
+                  $('#periodIni').datetimepicker({
+                    format: 'MM/YYYY'
+                  });
+                  $('#periodFin').datetimepicker({
+                    format: 'MM/YYYY',
+                    useCurrent: false
+                  });
+                  $("#periodIni").on("change.datetimepicker", function (e) {
+                    if ((e.date || e.date!=undefined) && $("#periodFin").children().val()!='' && $("#consultants").val()!='')
+                      hideBtn();
+                    else
+                      showBtn();
+
+                    $('#periodFin').datetimepicker('minDate', e.date);
+                  });
+                  $("#periodFin").on("change.datetimepicker", function (e) {
+                    if ((e.date || e.date!=undefined) && $("#periodIni").children().val()!='' && $("#consultants").val()!='')
+                      hideBtn();
+                    else
+                      showBtn();
+
+                    $('#periodIni').datetimepicker('maxDate', e.date);
+                  });
+                });
+        .col-sm-12
+          .row.row-botton
+            .col-sm-2
+              h5 Consultor
+            .col-sm-10
+              select#consultants.form-control(multiple="")
+                each val in consultant
+                  option(value=val.id)= val.name
+        .col-sm-12
+          .row.row-botton
+            .col-sm-2
+              h5 Generar
+            .col-sm-10
+              .row
+                .col-sm-3.row-botton
+                  button.btn.btn-info.btn-block(type="button")#btnRel Relatório
+                .col-sm-3.row-botton
+                  button.btn.btn-info.btn-block(type="button" disabled)#btnGra Gráfico
+                .col-sm-3.row-botton
+                  button.btn.btn-info.btn-block(type="button" disabled)#btnPiz Pizza
+    br
+    #content!= results
+    script(type="text/javascript").
+      let periodIni = document.querySelector('#periodIni');
+      let periodFin = document.querySelector('#periodFin');
+      let consultants = $("#consultants");
+
+      document.querySelector('#consultants').addEventListener("change", function() {
+        if (periodIni.children[0].value!='' && periodFin.children[0].value!='' && consultants.val()!='')
+          hideBtn();
+        else
+          showBtn();
+      });
+
+      $('#btnRel').click(function() {
+        let data = {};
+        data.dateIni = periodIni.children[0].value;
+        data.dateFin = periodFin.children[0].value;
+        data.arrayConsultants = consultants.val();
+
+        $.ajax({
+          type: 'POST',
+          data: JSON.stringify(data),
+          contentType: 'application/json',
+          url: 'http://localhost:3000/report',						
+          success: function(data) {
+            document.getElementById("content").innerHTML = data;
+          }
+        });
+      });
+
+      function showBtn() {
+        document.querySelector('#btnRel').setAttribute('disabled', true);
+        document.querySelector('#btnGra').setAttribute('disabled', true);
+        document.querySelector('#btnPiz').setAttribute('disabled', true);
+      }
+
+      function hideBtn() {
+        document.querySelector('#btnRel').removeAttribute('disabled');
+        document.querySelector('#btnGra').removeAttribute('disabled');
+        document.querySelector('#btnPiz').removeAttribute('disabled');
+      }

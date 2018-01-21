@@ -6,3 +6,33 @@ body {
 a {
   color: #00B7FF;
 }
+
+select {
+  min-height : 300px;
+}
+
+.row-botton {
+  padding-bottom: 10px
+}
+
+.table-row-balance {
+  font-weight: bold;
+  background-color: #799e9aad !important;
+  color: floralwhite;
+}
+
+.table-tr-color {
+  background: #f5fff5;
+}
+
+.table-row-value-positive {
+  color: #283352;
+}
+
+.table-row-value-negative {
+  color: #c10000
+}
+
+.center {
+  text-align: center;
+}
