@@ -1,21 +1,80 @@
 extends layout
 
 block content
-  .container
-    header.header
-      nav
-        ul.nav.nav-pills.float-right
-          li.nav-item
-            a.nav-link.active(href='https://getbootstrap.com/docs/4.0/examples/narrow-jumbotron/#')
-              | Home 
-              span.sr-only (current)
-          li.nav-item
-            a.nav-link(href='https://getbootstrap.com/docs/4.0/examples/narrow-jumbotron/#') About
-          li.nav-item
-            a.nav-link(href='https://getbootstrap.com/docs/4.0/examples/narrow-jumbotron/#') Contact
-      h3.text-muted Agence - Prototipe
-      hr
-    main(role='main')
-      h2 Consultar
-    br
-    h2 Resultado
+	.container
+		header.header
+			nav
+				ul.nav.nav-pills.float-right
+					li.nav-item
+						a.nav-link.active(href='https://getbootstrap.com/docs/4.0/examples/narrow-jumbotron/#')
+							| Home 
+							span.sr-only (current)
+					li.nav-item
+						a.nav-link(href='https://getbootstrap.com/docs/4.0/examples/narrow-jumbotron/#') About
+					li.nav-item
+						a.nav-link(href='https://getbootstrap.com/docs/4.0/examples/narrow-jumbotron/#') Contact
+			h3.text-muted Agence - Prototipe
+			hr
+		main(role='main')
+			//- .jumbotron.text-center
+				h1 Reporte Por Consultor
+				p Resize this responsive page to see the effect!
+			.row
+				.col-sm-12
+					.row.row-botton
+						.col-sm-2
+							h5 Período
+						.col-sm-10
+							.row
+								.col-md-6
+									.form-group
+										#datetimepicker7.input-group.date(data-target-input="nearest")
+											input.form-control.datetimepicker-input(type="text" data-target="#datetimepicker7")
+											.input-group-append(data-target="#datetimepicker7" data-toggle="datetimepicker")
+												.input-group-text
+													i.fa.fa-calendar
+								.col-md-6
+									.form-group
+										#datetimepicker8.input-group.date(data-target-input="nearest")
+											input.form-control.datetimepicker-input(type="text" data-target="#datetimepicker8")
+											.input-group-append(data-target="#datetimepicker8" data-toggle="datetimepicker")
+												.input-group-text
+													i.fa.fa-calendar
+							script(type="text/javascript").
+								$(function () {
+									$('#datetimepicker7').datetimepicker({
+										format: 'MM/YYYY'
+									});
+									$('#datetimepicker8').datetimepicker({
+										format: 'MM/YYYY',
+										useCurrent: false
+									});
+									$("#datetimepicker7").on("change.datetimepicker", function (e) {
+										$('#datetimepicker8').datetimepicker('minDate', e.date);
+									});
+									$("#datetimepicker8").on("change.datetimepicker", function (e) {
+										$('#datetimepicker7').datetimepicker('maxDate', e.date);
+									});
+								});
+				.col-sm-12
+					.row.row-botton
+						.col-sm-2
+							h5 Consultor
+						.col-sm-10
+							select#sel1.form-control(multiple="")
+								each val in consultant
+									option= val
+				.col-sm-12
+					.row.row-botton
+						.col-sm-2
+							h5 Generar
+						.col-sm-10
+							.row
+								.col-sm-3.row-botton
+									button.btn.btn-info.btn-block#send Relatório
+								.col-sm-3.row-botton
+									button.btn.btn-info.btn-block Gráfico
+								.col-sm-3.row-botton
+									button.btn.btn-info.btn-block Pizza
+		br
+		h2 Resultado
