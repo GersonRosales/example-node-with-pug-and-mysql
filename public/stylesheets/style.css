@@ -36,3 +36,10 @@ select {
 .center {
   text-align: center;
 }
+
+@media (min-width: 600px) {
+  .chart {
+    width: 100%; 
+    min-height: 450px;
+  }
+}

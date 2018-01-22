@@ -81,14 +81,16 @@ block content
             .col-sm-10
               .row
                 .col-sm-3.row-botton
-                  button.btn.btn-info.btn-block(type="button")#btnRel Relatório
+                  button.btn.btn-info.btn-block(type="button" disabled)#btnRep Relatório
                 .col-sm-3.row-botton
                   button.btn.btn-info.btn-block(type="button" disabled)#btnGra Gráfico
                 .col-sm-3.row-botton
                   button.btn.btn-info.btn-block(type="button" disabled)#btnPiz Pizza
-    br
-    #content!= results
+      br
+      #content!= results
+
     script(type="text/javascript").
+      google.load("visualization", "1", {packages:["corechart"]});
       let periodIni = document.querySelector('#periodIni');
       let periodFin = document.querySelector('#periodFin');
       let consultants = $("#consultants");
@@ -100,7 +102,7 @@ block content
           showBtn();
       });
 
-      $('#btnRel').click(function() {
+      $('#btnRep').click(function() {
         let data = {};
         data.dateIni = periodIni.children[0].value;
         data.dateFin = periodFin.children[0].value;
@@ -117,14 +119,55 @@ block content
         });
       });
 
+      $('#btnGra').click(function() {
+        let data = {};
+        data.dateIni = periodIni.children[0].value;
+        data.dateFin = periodFin.children[0].value;
+        data.arrayConsultants = consultants.val();
+
+        $.ajax({
+          type: 'POST',
+          data: JSON.stringify(data),
+          contentType: 'application/json',
+          url: 'http://localhost:3000/graphic',						
+          success: function(data) {
+            console.log(data);
+            document.getElementById("content").innerHTML = data.html;
+            let seriesObj = {};
+            seriesObj[data.column] = {type: 'line'};
+            let options = {
+              title : 'Porcentaje de Ganancias Por Cada Consultor',
+              vAxis: {title: 'Dolar'},
+              hAxis: {title: 'Mes'},
+              seriesType: 'bars',
+              series: seriesObj
+            };
+            drawComboChart(data.earnings, options);
+            google.setOnLoadCallback(drawComboChart);
+            $(window).resize(function(){
+              drawComboChart(data.earnings, options);
+            });
+          }
+        });
+      });
+
       function showBtn() {
-        document.querySelector('#btnRel').setAttribute('disabled', true);
+        document.querySelector('#btnRep').setAttribute('disabled', true);
         document.querySelector('#btnGra').setAttribute('disabled', true);
         document.querySelector('#btnPiz').setAttribute('disabled', true);
       }
 
       function hideBtn() {
-        document.querySelector('#btnRel').removeAttribute('disabled');
+        document.querySelector('#btnRep').removeAttribute('disabled');
         document.querySelector('#btnGra').removeAttribute('disabled');
         document.querySelector('#btnPiz').removeAttribute('disabled');
+      }
+
+      function drawComboChart(earnings, options) {
+        console.log(options);
+        console.log(earnings);
+        
+        var data = google.visualization.arrayToDataTable(earnings);
+        var chart = new google.visualization.ComboChart(document.getElementById('comboChartDiv'));
+        chart.draw(data, options);
       }
