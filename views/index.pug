@@ -133,10 +133,14 @@ block content
           success: function(data) {
             console.log(data);
             document.getElementById("content").innerHTML = data.html;
+
+            if (!data.error)
+              return;
+            
             let seriesObj = {};
             seriesObj[data.column] = {type: 'line'};
             let options = {
-              title : 'Porcentaje de Ganancias Por Cada Consultor',
+              title : 'Desempeño Por Cada Consultor',
               vAxis: {title: 'Dolar'},
               hAxis: {title: 'Mes'},
               seriesType: 'bars',
@@ -146,6 +150,36 @@ block content
             google.setOnLoadCallback(drawComboChart);
             $(window).resize(function(){
               drawComboChart(data.earnings, options);
+            });
+          },
+          error: function(data) {
+            console.log('Error');
+            console.log(data);
+          }
+        });
+      });
+
+      $('#btnPiz').click(function() {
+        let data = {};
+        data.dateIni = periodIni.children[0].value;
+        data.dateFin = periodFin.children[0].value;
+        data.arrayConsultants = consultants.val();
+
+        $.ajax({
+          type: 'POST',
+          data: JSON.stringify(data),
+          contentType: 'application/json',
+          url: 'http://localhost:3000/pie',						
+          success: function(data) {
+            console.log(data);
+            document.getElementById("content").innerHTML = data.html;
+            var options = {
+              title: 'Porcentaje De Ganancias Por Consultor'
+            };
+            drawPieChart(data.earnings, options);
+            google.setOnLoadCallback(drawPieChart);
+            $(window).resize(function(){
+              drawPieChart(data.earnings, options);
             });
           }
         });
@@ -164,10 +198,13 @@ block content
       }
 
       function drawComboChart(earnings, options) {
-        console.log(options);
-        console.log(earnings);
-        
-        var data = google.visualization.arrayToDataTable(earnings);
-        var chart = new google.visualization.ComboChart(document.getElementById('comboChartDiv'));
+        let data = google.visualization.arrayToDataTable(earnings);
+        let chart = new google.visualization.ComboChart(document.getElementById('comboChartDiv'));
+        chart.draw(data, options);
+      }
+
+      function drawPieChart(earnings, options) {
+        let data = google.visualization.arrayToDataTable(earnings);
+        let chart = new google.visualization.PieChart(document.getElementById('pieChartDiv'));
         chart.draw(data, options);
       }

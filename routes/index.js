@@ -120,7 +120,7 @@ router.post('/graphic', (req, res, next) => {
     });
 
     if (!req.body.dateIni || !req.body.dateFin || !req.body.arrayConsultants.length) {
-      res.send('<div class="alert alert-warning">Los campos del <strong>Período</strong> y <strong>Consultor</strong> son obligatorios.</div>');
+      res.send({html: '<div class="alert alert-warning">Los campos del <strong>Período</strong> y <strong>Consultor</strong> son obligatorios.</div>', error: true});
     }
     /**
      * Creating a string with the format correct '2017-01-01'
@@ -226,6 +226,98 @@ router.post('/graphic', (req, res, next) => {
           const fn = pug.compile(data);
           const html = fn();
           res.send({html: html, earnings: array, consultants: consultants, column: consultants.length});
+        });
+      } else {
+        res.send('<div class="alert alert-success">No se encontraron registros para el período y/o consultor(es) seleccionados.</div>');
+      }
+    });
+
+    connection.end();
+  }
+});
+
+/* POST render pie. */
+router.post('/pie', (req, res, next) => {
+  if (req.xhr) {
+    console.log(JSON.stringify(req.body));
+    const connection = mysql.createConnection(db);
+
+    connection.connect((error) => {
+      if (error) {
+        throw error;
+      } else {
+        console.log('Successful connect');
+      }
+    });
+
+    if (!req.body.dateIni || !req.body.dateFin || !req.body.arrayConsultants.length) {
+      res.send('<div class="alert alert-warning">Los campos del <strong>Período</strong> y <strong>Consultor</strong> son obligatorios.</div>');
+    }
+    /**
+     * Creating a string with the format correct '2017-01-01'
+     */
+    const dateIni = `${req.body.dateIni.split('/')[1]}-${req.body.dateIni.split('/')[0]}-01`;
+    const finFisrtDay = `${req.body.dateFin.split('/')[1]}-${req.body.dateFin.split('/')[0]}-01`;
+    /**
+     * Set the correct finale date with the las day of the month
+     */
+    const dateFin = moment(finFisrtDay).endOf('month').format('YYYY-MM-DD');
+    const numberOfMonths = moment(dateFin).diff(moment(dateIni), 'months') + 1;
+    /**
+     * Transforme an array ['a', 'b', 'c'] in a list ('a', 'b', 'c')
+     */
+    const consultantsList = `'${req.body.arrayConsultants.join("', '")}'`;
+    const textQuery = `SELECT cu.no_usuario AS name, 
+    sum(cf.total-(cf.total*(cf.total_imp_inc/100))) AS earnings
+    FROM cao_fatura cf
+    JOIN cao_os co
+    ON co.co_os = cf.co_os
+    JOIN cao_salario cs
+    ON cs.co_usuario = co.co_usuario
+    JOIN cao_usuario cu
+    ON co.co_usuario = cu.co_usuario
+    WHERE cf.data_emissao between '${dateIni}' and '${dateFin}'
+    AND co.co_usuario IN (${consultantsList})
+    GROUP BY 1
+    ORDER BY 1`;
+
+    connection.query(textQuery, (error, result, fields) => {
+      if (error) {
+        throw error;
+      } else if (result.length > 0) {
+        /**
+         * Create Array with the following structure for build the charts
+         * [['Task', 'Hours per Day'],
+            ['Work',     11],
+            ['Eat',      2],
+            ['Commute',  2],
+            ['Watch TV', 2],
+            ['Sleep',    7]]
+         */
+        const array = [];
+        let arrayRow = [];
+        arrayRow.push('Nombre');
+        arrayRow.push('Hours per Day');
+        array.push(arrayRow);
+        /**
+         * Sum total of earnings of everybody consultant
+         */
+        const sumEarnings = _.reduce(_.map(result, 'earnings'), (sum, n) => {
+          return sum + n;
+        }, 0);
+        
+        _.forEach(result, (value, index) => {
+          arrayRow = [];
+          arrayRow.push(value.name);
+          arrayRow.push(value.earnings / sumEarnings);
+          array.push(arrayRow);
+        });
+
+        fs.readFile('./views/pie.pug', 'utf-8', (err, data) => {
+          if (err) { throw err; }
+          const fn = pug.compile(data);
+          const html = fn();
+          res.send({html: html, earnings: array});
         });
       } else {
         res.send('<div class="alert alert-success">No se encontraron registros para el período y/o consultor(es) seleccionados.</div>');
