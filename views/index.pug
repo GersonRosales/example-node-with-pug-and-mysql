@@ -13,7 +13,7 @@ block content
             a.nav-link(href='https://getbootstrap.com/docs/4.0/examples/narrow-jumbotron/#') About
           li.nav-item
             a.nav-link(href='https://getbootstrap.com/docs/4.0/examples/narrow-jumbotron/#') Contact
-      h3.text-muted Agence - Prototipe
+      h3.text-muted Prototipe
       hr
     main(role='main')
       //- .jumbotron.text-center
@@ -175,6 +175,10 @@ block content
           success: function(data) {
             console.log(data);
             document.getElementById("content").innerHTML = data.html;
+
+            if (data.error)
+              return;
+
             var options = {
               title: 'Porcentaje De Ganancias Por Consultor'
             };
@@ -183,6 +187,10 @@ block content
             $(window).resize(function(){
               drawPieChart(data.earnings, options);
             });
+          },
+          error: function(data) {
+            console.log('Error');
+            console.log(data);
           }
         });
       });
@@ -201,12 +209,22 @@ block content
 
       function drawComboChart(earnings, options) {
         let data = google.visualization.arrayToDataTable(earnings);
-        let chart = new google.visualization.ComboChart(document.getElementById('comboChartDiv'));
+        let chart;
+        try {
+          chart = new google.visualization.ComboChart(document.getElementById('comboChartDiv'));
+        } catch(err) {
+          return;
+        }
         chart.draw(data, options);
       }
 
       function drawPieChart(earnings, options) {
         let data = google.visualization.arrayToDataTable(earnings);
-        let chart = new google.visualization.PieChart(document.getElementById('pieChartDiv'));
+        let chart;
+        try {
+          chart = new google.visualization.PieChart(document.getElementById('pieChartDiv'));
+        } catch(err) {
+          return;
+        }
         chart.draw(data, options);
       }
