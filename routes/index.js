@@ -138,7 +138,8 @@ router.post('/graphic', (req, res, next) => {
     const consultantsList = `'${req.body.arrayConsultants.join("', '")}'`;
     const textQuery = `SELECT cu.no_usuario AS name, 
     DATE_FORMAT(cf.data_emissao,'%Y/%m') AS period, 
-    sum(cf.total-(cf.total*(cf.total_imp_inc/100))) AS earnings
+    sum(cf.total-(cf.total*(cf.total_imp_inc/100))) AS earnings,
+    cs.brut_salario AS cost
     FROM cao_fatura cf
     JOIN cao_os co
     ON co.co_os = cf.co_os
@@ -159,6 +160,12 @@ router.post('/graphic', (req, res, next) => {
          * Create a list with only the names of the consultants for then create a table to each them
          */
         const consultants = _.uniq(_.map(result, 'name'));
+        /**
+         * Calculating the average of salario
+         */
+        const costAverage = _.reduce(_.map(result, 'cost'), (sum, n) => {
+          return sum + n;
+        }, 0);
         /**
          * Create Array with the following structure for build the charts
          * [['Month',  'Papua New Guinea', 'Rwanda', 'Average'],
@@ -218,8 +225,8 @@ router.post('/graphic', (req, res, next) => {
         /*
         * Put the values of the average
         */
-        for (let i = 1; i < numberOfMonths + 1; i++) {
-          array[i].push(Math.round(((rowArray[i] ? rowArray[i] : 0) / consultants.length) * 100) / 100);
+        for (i = 1; i < numberOfMonths + 1; i++) {
+          array[i].push(costAverage / consultants.length);
         }
         fs.readFile('./views/graphic.pug', 'utf-8', (err, data) => {
           if (err) { throw err; }
