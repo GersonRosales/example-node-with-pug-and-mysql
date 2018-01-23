@@ -26,27 +26,20 @@ block content
               h5 Período
             .col-sm-10
               .row
-                .col-md-6
-                  .form-group
-                    #periodIni.input-group.date(data-target-input="nearest")
-                      input.form-control.datetimepicker-input(type="text" data-target="#periodIni")
-                      .input-group-append(data-target="#periodIni" data-toggle="datetimepicker")
-                        .input-group-text
-                          i.fa.fa-calendar
-                .col-md-6
-                  .form-group
-                    #periodFin.input-group.date(data-target-input="nearest")
-                      input.form-control.datetimepicker-input(type="text" data-target="#periodFin")
-                      .input-group-append(data-target="#periodFin" data-toggle="datetimepicker")
-                        .input-group-text
-                          i.fa.fa-calendar
+                .col-sm-6
+                  input#periodIni.form-control.datetimepicker-input(type="text" data-toggle="datetimepicker" data-target="#periodIni")
+                .col-sm-6
+                  input#periodFin.form-control.datetimepicker-input(type="text" data-toggle="datetimepicker" data-target="#periodFin")
+
               script(type="text/javascript").
                 $(function () {
                   $('#periodIni').datetimepicker({
-                    format: 'MM/YYYY'
+                    viewMode: 'years',
+                    format: 'DD/MM/YYYY'
                   });
                   $('#periodFin').datetimepicker({
-                    format: 'MM/YYYY',
+                    viewMode: 'years',
+                    format: 'DD/MM/YYYY',
                     useCurrent: false
                   });
                   $("#periodIni").on("change.datetimepicker", function (e) {
@@ -89,11 +82,11 @@ block content
             .col-sm-10
               .row
                 .col-sm-3.row-botton
-                  button.btn.btn-info.btn-block(type="button" disabled)#btnRep Relatório
+                  button.btn.btn-info.btn-block(type="button" disabled)#btnRep.fa.fa-list-alt &nbsp Relatório
                 .col-sm-3.row-botton
-                  button.btn.btn-info.btn-block(type="button" disabled)#btnGra Gráfico
+                  button.btn.btn-info.btn-block(type="button" disabled)#btnGra.fa.fa-bar-chart &nbsp Gráfico
                 .col-sm-3.row-botton
-                  button.btn.btn-info.btn-block(type="button" disabled)#btnPiz Pizza
+                  button.btn.btn-info.btn-block(type="button" disabled)#btnPiz.fa.fa-pie-chart &nbsp Pizza
       br
       #content!= results
 
@@ -104,7 +97,8 @@ block content
       let consultants = $("#consultants");
 
       document.querySelector('#consultants').addEventListener("change", function() {
-        if (periodIni.children[0].value!='' && periodFin.children[0].value!='' && consultants.val()!='')
+        console.log('consultants');
+        if (periodIni.value!='' && periodFin.value!='' && consultants.val()!='')
           hideBtn();
         else
           showBtn();
@@ -112,8 +106,8 @@ block content
 
       $('#btnRep').click(function() {
         let data = {};
-        data.dateIni = periodIni.children[0].value;
-        data.dateFin = periodFin.children[0].value;
+        data.dateIni = periodIni.value;
+        data.dateFin = periodFin.value;
         data.arrayConsultants = consultants.val();
 
         $.ajax({
@@ -129,8 +123,8 @@ block content
 
       $('#btnGra').click(function() {
         let data = {};
-        data.dateIni = periodIni.children[0].value;
-        data.dateFin = periodFin.children[0].value;
+        data.dateIni = periodIni.value;
+        data.dateFin = periodFin.value;
         data.arrayConsultants = consultants.val();
 
         $.ajax({
@@ -142,7 +136,7 @@ block content
             console.log(data);
             document.getElementById("content").innerHTML = data.html;
 
-            if (!data.error)
+            if (data.error)
               return;
             
             let seriesObj = {};
@@ -169,8 +163,8 @@ block content
 
       $('#btnPiz').click(function() {
         let data = {};
-        data.dateIni = periodIni.children[0].value;
-        data.dateFin = periodFin.children[0].value;
+        data.dateIni = periodIni.value;
+        data.dateFin = periodFin.value;
         data.arrayConsultants = consultants.val();
 
         $.ajax({

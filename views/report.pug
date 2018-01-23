@@ -36,7 +36,10 @@ each consultant, index in consultants
             - sum_Commissions += earnings[i].commission
             - sum_Profits += earnings[i].profit
             mixin td(title, value)
-              td(data-title=title)= Number(value).toLocaleString('en-US', {style: 'currency', currency: 'USD'})
+              if value > -1
+                td(data-title=title)= Number(value).toLocaleString('en-US', {style: 'currency', currency: 'USD'})
+              else
+                td(data-title=title).table-row-value-negative= Number(value).toLocaleString('en-US', {style: 'currency', currency: 'USD'})                
             +td('Ganancias', earnings[i].earnings.toFixed(2))
             +td('Costo Fijo', earnings[i].cost)
             +td('Comisión', earnings[i].commission.toFixed(2))

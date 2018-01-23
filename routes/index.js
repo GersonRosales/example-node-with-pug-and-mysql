@@ -58,8 +58,8 @@ router.post('/report', (req, res, next) => {
     /**
      * Creating a string with the format correct '2017-01-01'
      */
-    const dateIni = `${req.body.dateIni.split('/')[1]}-${req.body.dateIni.split('/')[0]}-01`;
-    const finFisrtDay = `${req.body.dateFin.split('/')[1]}-${req.body.dateFin.split('/')[0]}-01`;
+    const dateIni = `${req.body.dateIni.split('/')[2]}-${req.body.dateIni.split('/')[1]}-01`;
+    const finFisrtDay = `${req.body.dateFin.split('/')[2]}-${req.body.dateFin.split('/')[1]}-01`;
     /**
      * Set the correct finale date with the las day of the month
      */
@@ -125,13 +125,18 @@ router.post('/graphic', (req, res, next) => {
     /**
      * Creating a string with the format correct '2017-01-01'
      */
-    const dateIni = `${req.body.dateIni.split('/')[1]}-${req.body.dateIni.split('/')[0]}-01`;
-    const finFisrtDay = `${req.body.dateFin.split('/')[1]}-${req.body.dateFin.split('/')[0]}-01`;
+    const dateIni = `${req.body.dateIni.split('/')[2]}-${req.body.dateIni.split('/')[1]}-01`;
+    const finFisrtDay = `${req.body.dateFin.split('/')[2]}-${req.body.dateFin.split('/')[1]}-01`;
     /**
      * Set the correct finale date with the las day of the month
      */
     const dateFin = moment(finFisrtDay).endOf('month').format('YYYY-MM-DD');
     const numberOfMonths = moment(dateFin).diff(moment(dateIni), 'months') + 1;
+
+    if (numberOfMonths > 12) {
+      res.send({html: '<div class="alert alert-warning">Los campos del <strong>Período</strong> y <strong>Consultor</strong> son obligatorios.</div>', error: true});
+    }
+
     /**
      * Transforme an array ['a', 'b', 'c'] in a list ('a', 'b', 'c')
      */
@@ -263,8 +268,8 @@ router.post('/pie', (req, res, next) => {
     /**
      * Creating a string with the format correct '2017-01-01'
      */
-    const dateIni = `${req.body.dateIni.split('/')[1]}-${req.body.dateIni.split('/')[0]}-01`;
-    const finFisrtDay = `${req.body.dateFin.split('/')[1]}-${req.body.dateFin.split('/')[0]}-01`;
+    const dateIni = `${req.body.dateIni.split('/')[2]}-${req.body.dateIni.split('/')[1]}-01`;
+    const finFisrtDay = `${req.body.dateFin.split('/')[2]}-${req.body.dateFin.split('/')[1]}-01`;
     /**
      * Set the correct finale date with the las day of the month
      */

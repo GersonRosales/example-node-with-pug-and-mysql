@@ -91,6 +91,10 @@ select {
   Label the data
   */
   #table-responsive td:before { content: attr(data-title); }
+
+  .text-help {
+    display: none;
+  }
 }
 
 @media (min-width: 600px) {
