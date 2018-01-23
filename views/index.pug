@@ -74,6 +74,14 @@ block content
               select#consultants.form-control(multiple="")
                 each val in consultant
                   option(value=val.id)= val.name
+              div.text-help
+                | Se pueden seleccionar múltiples opciones a la vez.
+                br
+                |     .- Para Windows: Mantenga presionado el botón de control (ctrl) para seleccionar múltiples opciones
+                br
+                |     .- Para Mac: Mantenga presionado el botón de comando para seleccionar múltiples opciones
+                br
+                |     Para seleccionar un rango o todas las opciones, mantenga presionado el botón Mayús y haga clic en la primera opción, desplácese y haga clic hasta la última opción que desee seleccionar.
         .col-sm-12
           .row.row-botton
             .col-sm-2

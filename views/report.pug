@@ -14,39 +14,40 @@ each consultant, index in consultants
   - let sum_Commissions = 0
   - let sum_Profits = 0
   - attributes.id = consultant;
-  table.table.table-striped&attributes(attributes)
-    thead
-      h5= consultant.replace('.', ' ').toUpperCase()
-      tr
-        th Período
-        th Ganancias Netas
-        th Costo Fijo
-        th Comisión
-        th Beneficio
-    tbody
-      //- Create a row for each month, the earnings array will start in the last 
-      //- element visited of the last consultant, it will help to run only one time the array
-      - for (let i=j; earnings[i] && earnings[i].user==consultant; i++)
-        tr        
-          - date = moment(earnings[i].period, 'MM/YYYY').format("MMMM [de] YYYY");
-          th(scope="row")= date[0].toUpperCase() + date.substr(1)
-          - sum_Earnings += earnings[i].earnings
-          - sum_Costs += earnings[i].cost
-          - sum_Commissions += earnings[i].commission
-          - sum_Profits += earnings[i].profit
-          mixin td(value)
-            td= Number(value).toLocaleString('en-US', {style: 'currency', currency: 'USD'})
-          +td(earnings[i].earnings.toFixed(2))
-          +td(earnings[i].cost)
-          +td(earnings[i].commission.toFixed(2))
-          +td(earnings[i].profit.toFixed(2))
-        - j=i+1
-      tr.table-row-balance
-        th(scope="row")= 'Saldo'
-        +td(sum_Earnings.toFixed(2))
-        +td(sum_Costs)
-        +td(sum_Commissions.toFixed(2))
-        if sum_Profits.toFixed(2) > -1
-          td.table-row-value-positive= Number(sum_Profits.toFixed(2)).toLocaleString('en-US', {style: 'currency', currency: 'USD'})
-        else
-          td.table-row-value-negative= Number(sum_Profits.toFixed(2)).toLocaleString('en-US', {style: 'currency', currency: 'USD'})
+  div#table-responsive 
+    table.table.table-striped.table-condensed.table-hover.margin-top-medium.cf&attributes(attributes)
+      thead.cf
+        h5= consultant.replace('.', ' ').toUpperCase()
+        tr
+          th Período
+          th Ganancias
+          th Costo Fijo
+          th Comisión
+          th Beneficio
+      tbody
+        //- Create a row for each month, the earnings array will start in the last 
+        //- element visited of the last consultant, it will help to run only one time the array
+        - for (let i=j; earnings[i] && earnings[i].user==consultant; i++)
+          tr        
+            - date = moment(earnings[i].period, 'MM/YYYY').format("MMMM [de] YYYY");
+            th(scope="row").center= date[0].toUpperCase() + date.substr(1)
+            - sum_Earnings += earnings[i].earnings
+            - sum_Costs += earnings[i].cost
+            - sum_Commissions += earnings[i].commission
+            - sum_Profits += earnings[i].profit
+            mixin td(title, value)
+              td(data-title=title)= Number(value).toLocaleString('en-US', {style: 'currency', currency: 'USD'})
+            +td('Ganancias', earnings[i].earnings.toFixed(2))
+            +td('Costo Fijo', earnings[i].cost)
+            +td('Comisión', earnings[i].commission.toFixed(2))
+            +td('Beneficio', earnings[i].profit.toFixed(2))
+          - j=i+1
+        tr.table-row-balance
+          th(scope="row")= 'Saldo'
+          +td('Ganancias', sum_Earnings.toFixed(2))
+          +td('Costo Fijo', sum_Costs)
+          +td('Comisión', sum_Commissions.toFixed(2))
+          if sum_Profits.toFixed(2) > -1
+            td(data-title='Beneficio').table-row-value-positive= Number(sum_Profits.toFixed(2)).toLocaleString('en-US', {style: 'currency', currency: 'USD'})
+          else
+            td(data-title='Beneficio').table-row-value-negative= Number(sum_Profits.toFixed(2)).toLocaleString('en-US', {style: 'currency', currency: 'USD'})
