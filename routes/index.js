@@ -133,10 +133,6 @@ router.post('/graphic', (req, res, next) => {
     const dateFin = moment(finFisrtDay).endOf('month').format('YYYY-MM-DD');
     const numberOfMonths = moment(dateFin).diff(moment(dateIni), 'months') + 1;
 
-    if (numberOfMonths > 12) {
-      res.send({html: '<div class="alert alert-warning">Los campos del <strong>Período</strong> y <strong>Consultor</strong> son obligatorios.</div>', error: true});
-    }
-
     /**
      * Transforme an array ['a', 'b', 'c'] in a list ('a', 'b', 'c')
      */
@@ -240,7 +236,7 @@ router.post('/graphic', (req, res, next) => {
           res.send({html: html, earnings: array, consultants: consultants, column: consultants.length});
         });
       } else {
-        res.send('<div class="alert alert-success">No se encontraron registros para el período y/o consultor(es) seleccionados.</div>');
+        res.send({html: '<div class="alert alert-success">No se encontraron registros para el período y/o consultor(es) seleccionados.</div>', error: true});
       }
     });
 
@@ -332,7 +328,7 @@ router.post('/pie', (req, res, next) => {
           res.send({html: html, earnings: array});
         });
       } else {
-        res.send('<div class="alert alert-success">No se encontraron registros para el período y/o consultor(es) seleccionados.</div>');
+        res.send({html: '<div class="alert alert-success">No se encontraron registros para el período y/o consultor(es) seleccionados.</div>', error: true});
       }
     });
 
