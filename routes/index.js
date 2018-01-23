@@ -5,7 +5,7 @@ const mysql = require('mysql');
 const _ = require('lodash');
 const moment = require('moment');
 const pug = require('pug');
-const fs = require ( 'fs' );
+const fs = require('fs');
 
 /* GET home page. */
 router.get('/', (req, res, next) => {
