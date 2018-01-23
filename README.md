@@ -27,3 +27,5 @@ $ nodemon ./bin/www
 ```
 then open in your browser [http://localhost:3000](http://localhost:3000)
 
+## Preview
+![demo2](./public/images/demo.gif)
