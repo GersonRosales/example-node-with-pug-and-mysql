@@ -28,4 +28,4 @@ $ nodemon ./bin/www
 then open in your browser [http://localhost:3000](http://localhost:3000)
 
 ## Preview
-![demo2](./public/images/demo.gif)
+![demo](https://user-images.githubusercontent.com/863330/35323789-25691f48-00c5-11e8-9866-fd56f4766e9b.gif)
